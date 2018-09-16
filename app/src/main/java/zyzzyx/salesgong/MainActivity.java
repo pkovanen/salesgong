@@ -1,5 +1,6 @@
 package zyzzyx.salesgong;
 
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
@@ -7,6 +8,7 @@ import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.Menu;
+import android.view.MenuItem;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -26,7 +28,6 @@ public class MainActivity extends AppCompatActivity {
     private String PUSHER_API_KEY = null;
     private Pusher pusher = null;
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
@@ -44,6 +45,18 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case IDM_SETTINGS:
+                Intent i = new Intent(this, MyPreferencesActivity.class);
+                startActivity(i);
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
+
+    @Override
     public void onResume(){
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
 
@@ -56,10 +69,14 @@ public class MainActivity extends AppCompatActivity {
 
     private void initPusher() {
 
+        if (pusher != null) {
+            pusher.disconnect();
+        }
+
         if (PUSHER_API_KEY != null) {
             PusherOptions options = new PusherOptions();
             options.setCluster("eu");
-            Pusher pusher = new Pusher(PUSHER_API_KEY, options);
+            pusher = new Pusher(PUSHER_API_KEY, options);
             pusher.connect();
 
             Channel channel = pusher.subscribe("my-channel");
@@ -67,7 +84,7 @@ public class MainActivity extends AppCompatActivity {
             channel.bind("my-event", new SubscriptionEventListener() {
                 @Override
                 public void onEvent(String channelName, String eventName, final String data) {
-                    String mp3Url = null;
+                    String mp3Url = "";
                     JSONObject jObject;
                     try {
                         jObject = new JSONObject(data);
@@ -76,7 +93,7 @@ public class MainActivity extends AppCompatActivity {
                         e.printStackTrace();
                     }
 
-                    if (mp3Url == null) {
+                    if (mp3Url == "") {
                         // MP3 URL not specified, play local sample
                         System.out.println("Playing local sample");
                         MediaPlayer mediaPlayer;

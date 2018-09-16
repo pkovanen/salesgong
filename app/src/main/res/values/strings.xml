@@ -1,3 +1,7 @@
 <resources>
     <string name="app_name">SalesGong</string>
+    <string name="pref_apikey">Pusher API key</string>
+    <string name="pref_apikey_descr">Enter API key</string>
+    <string name="pref_apikey_summ">Set Pusher API key</string>
+    <string name="menu_settings">Settings</string>
 </resources>

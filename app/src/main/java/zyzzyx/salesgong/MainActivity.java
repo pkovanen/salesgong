@@ -112,12 +112,7 @@ public class MainActivity extends AppCompatActivity {
         }
 
         if (PUSHER_API_KEY != null && PUSHER_API_KEY != "") {
-            PusherOptions options = new PusherOptions();
-            options.setCluster("eu");
-            pusher = new Pusher(PUSHER_API_KEY, options);
-            pusher.connect();
-
-            Channel channel = pusher.subscribe("sales-gong");
+            Channel channel = pusherListenChannel();
 
             channel.bind("sales-event", new SubscriptionEventListener() {
                 @Override
@@ -125,37 +120,60 @@ public class MainActivity extends AppCompatActivity {
 
                     Log.d(TAG, "EVENT");
 
-                    String mp3Url = "";
-                    JSONObject jObject;
-                    try {
-                        jObject = new JSONObject(data);
-                        mp3Url = jObject.getString("mp3-url");
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
+                    String mp3Url = extractMP3Url(data, mp3Url);
 
                     if (mp3Url == "") {
                         // MP3 URL not specified, play local sample
-                        Log.d(TAG, "LOCAL SAMPLE");
-                        MediaPlayer mediaPlayer;
-                        mediaPlayer = MediaPlayer.create(getApplicationContext(), R.raw.sample);
-                        mediaPlayer.start();
+                        playLocalSample();
                     } else {
-                        try {
-                            // Stream
-                            Log.d(TAG, "REMOTE SAMPLE " + mp3Url);
-                            MediaPlayer mediaPlayer = new MediaPlayer();
-                            mediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
-                            mediaPlayer.setDataSource(mp3Url);
-                            mediaPlayer.prepare();
-                            mediaPlayer.start();
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                        }
+                        playRemoteSample(mp3Url);
                     }
                 }
             });
 
+        }
+    }
+
+    private Channel pusherListenChannel() {
+        PusherOptions options = new PusherOptions();
+        options.setCluster("eu");
+        pusher = new Pusher(PUSHER_API_KEY, options);
+        pusher.connect();
+
+        return pusher.subscribe("sales-gong");
+    }
+
+    private String extractMP3Url(String data) {
+        String mp3Url = "";
+
+        JSONObject jObject;
+        try {
+            jObject = new JSONObject(data);
+            mp3Url = jObject.getString("mp3-url");
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return mp3Url;
+    }
+
+    private void playLocalSample() {
+        Log.d(TAG, "LOCAL SAMPLE");
+        MediaPlayer mediaPlayer;
+        mediaPlayer = MediaPlayer.create(getApplicationContext(), R.raw.sample);
+        mediaPlayer.start();
+    }
+
+    private void playRemoteSample(String mp3Url) {
+        try {
+            // Stream
+            Log.d(TAG, "REMOTE SAMPLE " + mp3Url);
+            MediaPlayer mediaPlayer = new MediaPlayer();
+            mediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
+            mediaPlayer.setDataSource(mp3Url);
+            mediaPlayer.prepare();
+            mediaPlayer.start();
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 }

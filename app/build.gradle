@@ -1,6 +1,14 @@
 apply plugin: 'com.android.application'
 
 android {
+    signingConfigs {
+        config {
+            storeFile file('/home/pasi/Dropbox/androidkeystore.jks')
+            keyAlias 'config'
+            keyPassword '7sKLRQ5CxvNQ'
+            storePassword '7sKLRQ5CxvNQ'
+        }
+    }
     compileSdkVersion 28
     defaultConfig {
         applicationId "zyzzyx.salesgong"
@@ -19,7 +27,7 @@ android {
 }
 
 dependencies {
-    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    implementation fileTree(include: ['*.jar'], dir: 'libs')
     implementation 'com.android.support:appcompat-v7:28.0.0-rc02'
     implementation 'com.android.support.constraint:constraint-layout:1.1.3'
     implementation 'com.android.support:design:28.0.0-rc02'

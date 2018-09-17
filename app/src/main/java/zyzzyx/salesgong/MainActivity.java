@@ -94,6 +94,12 @@ public class MainActivity extends AppCompatActivity {
 
         initPusher();
 
+        checkPreferencesButtonVisibility();
+
+        super.onResume();
+    }
+
+    private void checkPreferencesButtonVisibility() {
         Button preferencesButton = (Button) findViewById(R.id.button_api_key);
 
         if (PUSHER_API_KEY == null || PUSHER_API_KEY.equals("")) {
@@ -101,19 +107,20 @@ public class MainActivity extends AppCompatActivity {
         } else {
             preferencesButton.setVisibility(View.GONE);
         }
-
-        super.onResume();
     }
 
     private void initPusher() {
 
-        Log.d(TAG, "init: " + PUSHER_API_KEY);
+        Log.d(TAG, "init: pusher api key = " + PUSHER_API_KEY);
 
         if (pusher != null) {
             pusher.disconnect();
+            pusher = null;
         }
 
         if (PUSHER_API_KEY != null && !PUSHER_API_KEY.equals("")) {
+            createPusher();
+
             Channel channel = pusherListenChannel();
 
             channel.bind("sales-event", new SubscriptionEventListener() {
@@ -136,11 +143,17 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    private Channel pusherListenChannel() {
+    private void createPusher() {
+        Log.d(TAG, "createPusher = " + PUSHER_API_KEY);
+
         PusherOptions options = new PusherOptions();
         options.setCluster("eu");
         pusher = new Pusher(PUSHER_API_KEY, options);
         pusher.connect();
+    }
+
+    private Channel pusherListenChannel() {
+        Log.d(TAG, "pusherListenChannel");
 
         return pusher.subscribe("sales-gong");
     }

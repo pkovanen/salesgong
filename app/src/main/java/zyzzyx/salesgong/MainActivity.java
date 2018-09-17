@@ -43,6 +43,8 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -94,7 +96,7 @@ public class MainActivity extends AppCompatActivity {
 
         Button preferencesButton = (Button) findViewById(R.id.button_api_key);
 
-        if (PUSHER_API_KEY == null || PUSHER_API_KEY == "") {
+        if (PUSHER_API_KEY == null || PUSHER_API_KEY.equals("")) {
             preferencesButton.setVisibility(View.VISIBLE);
         } else {
             preferencesButton.setVisibility(View.GONE);
@@ -111,7 +113,7 @@ public class MainActivity extends AppCompatActivity {
             pusher.disconnect();
         }
 
-        if (PUSHER_API_KEY != null && PUSHER_API_KEY != "") {
+        if (PUSHER_API_KEY != null && !PUSHER_API_KEY.equals("")) {
             Channel channel = pusherListenChannel();
 
             channel.bind("sales-event", new SubscriptionEventListener() {
@@ -120,9 +122,9 @@ public class MainActivity extends AppCompatActivity {
 
                     Log.d(TAG, "EVENT");
 
-                    String mp3Url = extractMP3Url(data, mp3Url);
+                    String mp3Url = extractMP3Url(data);
 
-                    if (mp3Url == "") {
+                    if (!mp3Url.equals("")) {
                         // MP3 URL not specified, play local sample
                         playLocalSample();
                     } else {
@@ -158,6 +160,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void playLocalSample() {
         Log.d(TAG, "LOCAL SAMPLE");
+        setStatusText("Won deal, playing local sample");
         MediaPlayer mediaPlayer;
         mediaPlayer = MediaPlayer.create(getApplicationContext(), R.raw.sample);
         mediaPlayer.start();
@@ -167,6 +170,7 @@ public class MainActivity extends AppCompatActivity {
         try {
             // Stream
             Log.d(TAG, "REMOTE SAMPLE " + mp3Url);
+            setStatusText("Won deal, playing remote sample " + mp3Url);
             MediaPlayer mediaPlayer = new MediaPlayer();
             mediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
             mediaPlayer.setDataSource(mp3Url);
@@ -175,5 +179,13 @@ public class MainActivity extends AppCompatActivity {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    private void setStatusText(String status) {
+        SimpleDateFormat s = new SimpleDateFormat("dd.MM.yyyy - hhmmss: ");
+        String format = s.format(new Date());
+
+        TextView tv = (TextView)findViewById(R.id.textViewStatus);
+            tv.setText(format + status);
     }
 }

@@ -29,6 +29,8 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -48,6 +50,12 @@ public class MainActivity extends AppCompatActivity {
     private String PUSHER_API_KEY = null;
     private Pusher pusher = null;
     static final String TAG = "SalesGongMainActivity";
+
+    public void sendMessageNoAPIKey(View view) {
+        Intent myIntent = new Intent(MainActivity.this, MyPreferencesActivity.class);
+        startActivity(myIntent);
+    }
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -84,6 +92,14 @@ public class MainActivity extends AppCompatActivity {
 
         initPusher();
 
+        Button preferencesButton = (Button) findViewById(R.id.button_api_key);
+
+        if (PUSHER_API_KEY == null || PUSHER_API_KEY == "") {
+            preferencesButton.setVisibility(View.VISIBLE);
+        } else {
+            preferencesButton.setVisibility(View.GONE);
+        }
+
         super.onResume();
     }
 
@@ -95,7 +111,7 @@ public class MainActivity extends AppCompatActivity {
             pusher.disconnect();
         }
 
-        if (PUSHER_API_KEY != null) {
+        if (PUSHER_API_KEY != null && PUSHER_API_KEY != "") {
             PusherOptions options = new PusherOptions();
             options.setCluster("eu");
             pusher = new Pusher(PUSHER_API_KEY, options);

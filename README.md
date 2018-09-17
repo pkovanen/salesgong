@@ -37,9 +37,9 @@ In addition to Pipedrive, you need [Zapier](https://www.zapier.com) and [Pusher]
 * Select the filter you created in step 1
 * Action app = Pusher
 * "Publish Pusher Event"
-* Connect to your Pusher account
+* Connect to your Pusher app
 * Channels = sales-gong
-* Event Name = sales-event (or anything you like, this is ignored)
+* Event Name = sales-event
 * Event Data: if you want to use custom gong sound, you have to store the mp3 file into a public server and give its url here. Type mp3-url to the first field (key) and URL to the second field (value). If you omit the URL then the default cheering sound is played.
 
 4) Configure Android App

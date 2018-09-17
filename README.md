@@ -13,11 +13,11 @@ Download the app from Play market: *insert link here*
 
 In addition to Pipedrive, you need [Zapier](https://www.zapier.com) and [Pusher](https://www.pusher.com) accounts. Both are very easy to set up and free plans should be suitable for most uses. Zapier is used to inform Pusher whenever a deal is won in Pipedrive. The Android app in turn gets information of this new won deal via Pusher.
 
-1) Create a new filter in Pipedrive to show won deals
+### 1) Create a new filter in Pipedrive to show won deals
 
 ![Filter setup](https://www.dropbox.com/s/3bfumiz6hp02gnp/pipedrive_filter.png?raw=1)
 
-2) Create a new Channels App in Pusher:
+### 2) Create a new Channels App in Pusher:
 
 * Create new app
 * Name of your app: Sales gong (or whatever you like)
@@ -28,7 +28,7 @@ In addition to Pipedrive, you need [Zapier](https://www.zapier.com) and [Pusher]
 * Click "Create My App"
 * Go to "App Keys" tab to view the __key__, which you will need later
 
-3) Create a new Zap in Zapier:
+### 3) Create a new Zap in Zapier:
 
 * Trigger app = Pipedrive
 * Click "show less common options"
@@ -37,12 +37,12 @@ In addition to Pipedrive, you need [Zapier](https://www.zapier.com) and [Pusher]
 * Select the filter you created in step 1
 * Action app = Pusher
 * "Publish Pusher Event"
-* Connect to your Pusher account
+* Connect to your Pusher app
 * Channels = sales-gong
-* Event Name = sales-event (or anything you like, this is ignored)
+* Event Name = sales-event
 * Event Data: if you want to use custom gong sound, you have to store the mp3 file into a public server and give its url here. Type mp3-url to the first field (key) and URL to the second field (value). If you omit the URL then the default cheering sound is played.
 
-4) Configure Android App
+### 4) Configure Android App
 
 * Click menu->Settings
 * Select "Pusher API key" and input the Pusher key

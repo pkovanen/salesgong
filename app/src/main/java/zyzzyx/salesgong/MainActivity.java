@@ -26,6 +26,7 @@ import android.media.MediaPlayer;
 import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.TextView;
@@ -46,10 +47,10 @@ public class MainActivity extends AppCompatActivity {
     static final int IDM_SETTINGS = 101;
     private String PUSHER_API_KEY = null;
     private Pusher pusher = null;
+    static final String TAG = "SalesGongMainActivity";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_main);
@@ -79,7 +80,7 @@ public class MainActivity extends AppCompatActivity {
     public void onResume(){
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
 
-        PUSHER_API_KEY = prefs.getString("pref_apikey", null);
+        PUSHER_API_KEY = prefs.getString("pref_pusher_apikey", null);
 
         initPusher();
 
@@ -87,6 +88,8 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void initPusher() {
+
+        Log.d(TAG, "init: " + PUSHER_API_KEY);
 
         if (pusher != null) {
             pusher.disconnect();
@@ -100,9 +103,12 @@ public class MainActivity extends AppCompatActivity {
 
             Channel channel = pusher.subscribe("sales-gong");
 
-            channel.bind("my-event", new SubscriptionEventListener() {
+            channel.bind("sales-event", new SubscriptionEventListener() {
                 @Override
                 public void onEvent(String channelName, String eventName, final String data) {
+
+                    Log.d(TAG, "EVENT");
+
                     String mp3Url = "";
                     JSONObject jObject;
                     try {
@@ -114,21 +120,19 @@ public class MainActivity extends AppCompatActivity {
 
                     if (mp3Url == "") {
                         // MP3 URL not specified, play local sample
-                        System.out.println("Playing local sample");
+                        Log.d(TAG, "LOCAL SAMPLE");
                         MediaPlayer mediaPlayer;
                         mediaPlayer = MediaPlayer.create(getApplicationContext(), R.raw.sample);
                         mediaPlayer.start();
-                        mediaPlayer.release();
                     } else {
                         try {
                             // Stream
-                            System.out.println("Playing " + mp3Url + " over network");
+                            Log.d(TAG, "REMOTE SAMPLE " + mp3Url);
                             MediaPlayer mediaPlayer = new MediaPlayer();
                             mediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
                             mediaPlayer.setDataSource(mp3Url);
-                            mediaPlayer.prepare(); // might take long! (for buffering, etc)
+                            mediaPlayer.prepare();
                             mediaPlayer.start();
-                            mediaPlayer.release();
                         } catch (IOException e) {
                             e.printStackTrace();
                         }

@@ -38,6 +38,9 @@ import com.pusher.client.Pusher;
 import com.pusher.client.PusherOptions;
 import com.pusher.client.channel.Channel;
 import com.pusher.client.channel.SubscriptionEventListener;
+import com.pusher.client.connection.ConnectionEventListener;
+import com.pusher.client.connection.ConnectionState;
+import com.pusher.client.connection.ConnectionStateChange;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -131,7 +134,7 @@ public class MainActivity extends AppCompatActivity {
 
                     String mp3Url = extractMP3Url(data);
 
-                    if (!mp3Url.equals("")) {
+                    if (mp3Url.equals("")) {
                         // MP3 URL not specified, play local sample
                         playLocalSample();
                     } else {
@@ -146,10 +149,29 @@ public class MainActivity extends AppCompatActivity {
     private void createPusher() {
         Log.d(TAG, "createPusher = " + PUSHER_API_KEY);
 
-        PusherOptions options = new PusherOptions();
-        options.setCluster("eu");
+        PusherOptions options = new PusherOptions().setCluster("eu");
+
+        //***
+        Log.d(TAG, "nyt: " + PUSHER_API_KEY + " oikea: " +"28da98aa0c45d874c2b2" );
+        // ***
+        //PUSHER_API_KEY = "28da98aa0c45d874c2b2";
+        // ***
+
         pusher = new Pusher(PUSHER_API_KEY, options);
-        pusher.connect();
+
+        pusher.connect(new ConnectionEventListener() {
+            @Override
+            public void onConnectionStateChange(ConnectionStateChange change) {
+                Log.d(TAG, "State changed to " + change.getCurrentState() +
+                        " from " + change.getPreviousState());
+                setStatusText(change.getCurrentState().toString());
+            }
+
+            @Override
+            public void onError(String message, String code, Exception e) {
+                Log.d(TAG, "There was a problem connecting! Message: " + message + " code: " + code + " Exception: " + e );
+            }
+        }, ConnectionState.ALL);
     }
 
     private Channel pusherListenChannel() {
@@ -164,7 +186,9 @@ public class MainActivity extends AppCompatActivity {
         JSONObject jObject;
         try {
             jObject = new JSONObject(data);
-            mp3Url = jObject.getString("mp3-url");
+            if (jObject.has("mp3-url")) {
+                mp3Url = jObject.getString("mp3-url");
+            }
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -182,7 +206,7 @@ public class MainActivity extends AppCompatActivity {
     private void playRemoteSample(String mp3Url) {
         try {
             // Stream
-            Log.d(TAG, "REMOTE SAMPLE " + mp3Url);
+            Log.d(TAG, "REMOTE SAMPLE, URL: " + mp3Url);
             setStatusText("Won deal, playing remote sample " + mp3Url);
             MediaPlayer mediaPlayer = new MediaPlayer();
             mediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
@@ -194,11 +218,16 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    private void setStatusText(String status) {
-        SimpleDateFormat s = new SimpleDateFormat("dd.MM.yyyy - hhmmss: ");
-        String format = s.format(new Date());
+    private void setStatusText(final String status) {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                SimpleDateFormat s = new SimpleDateFormat("dd.MM.yyyy - HH:mm:ss: ");
+                String format = s.format(new Date());
 
-        TextView tv = (TextView)findViewById(R.id.textViewStatus);
-            tv.setText(format + status);
+                final TextView textView = (TextView) findViewById(R.id.textViewStatus);
+                textView.setText(format + status);
+            }
+        });
     }
 }

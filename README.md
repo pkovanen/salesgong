@@ -46,6 +46,7 @@ In addition to Pipedrive, you need [Zapier](https://www.zapier.com) and [Pusher]
 
 * Click menu->Settings
 * Select "Pusher API key" and input the Pusher key
+* Click back button so that you get to the main screen
 
 All set up!
 

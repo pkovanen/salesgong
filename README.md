@@ -2,7 +2,7 @@
 
 An Android application which makes it very easy to implement a sales gong, ie. a sound is played when a new deal is won in the company.
 
-Download the app from Play market: *insert link here*
+Download the app from Play market: [Google Play](https://play.google.com/store/apps/details?id=zyzzyx.salesgong)
 
 * Very easy to take into use
 * Serverless

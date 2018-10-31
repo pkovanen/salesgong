@@ -151,12 +151,6 @@ public class MainActivity extends AppCompatActivity {
 
         PusherOptions options = new PusherOptions().setCluster("eu");
 
-        //***
-        Log.d(TAG, "nyt: " + PUSHER_API_KEY + " oikea: " +"28da98aa0c45d874c2b2" );
-        // ***
-        //PUSHER_API_KEY = "28da98aa0c45d874c2b2";
-        // ***
-
         pusher = new Pusher(PUSHER_API_KEY, options);
 
         pusher.connect(new ConnectionEventListener() {

@@ -2,12 +2,14 @@
 
 An Android application which makes it very easy to implement a sales gong, ie. a sound is played when a new deal is won in the company.
 
-Download the app from Play market: *insert link here*
+Download the app from Play market: [Google Play](https://play.google.com/store/apps/details?id=zyzzyx.salesgong)
 
 * Very easy to take into use
 * Serverless
 * Works with several CRMs, instructions for Pipedrive provided below
 * Easy to customize the "gong" sound
+
+## Please note that at the moment you have to keep the app in foreground.
 
 ## How to make the gong work with Pipedrive
 

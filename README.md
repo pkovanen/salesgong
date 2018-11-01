@@ -9,6 +9,8 @@ Download the app from Play market: [Google Play](https://play.google.com/store/a
 * Works with several CRMs, instructions for Pipedrive provided below
 * Easy to customize the "gong" sound
 
+## Please note that at the moment you have to keep the app in foreground.
+
 ## How to make the gong work with Pipedrive
 
 In addition to Pipedrive, you need [Zapier](https://www.zapier.com) and [Pusher](https://www.pusher.com) accounts. Both are very easy to set up and free plans should be suitable for most uses. Zapier is used to inform Pusher whenever a deal is won in Pipedrive. The Android app in turn gets information of this new won deal via Pusher.

@@ -14,8 +14,8 @@ android {
         applicationId "zyzzyx.salesgong"
         minSdkVersion 15
         targetSdkVersion 28
-        versionCode 2
-        versionName "1.02"
+        versionCode 3
+        versionName "1.03"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
